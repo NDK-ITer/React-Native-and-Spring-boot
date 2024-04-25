@@ -1,0 +1,3 @@
+run:
+    {mvn spring-boot:run}
+    {& 'E:\Program Files\JDKVer\jdk-21\bin\java.exe' '@C:\Users\nadad\AppData\Local\Temp\cp_61cffi5ez0wnmb7rpyi9m46sc.argfile' 'com.example.demo.DemoApplication'}
