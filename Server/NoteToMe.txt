@@ -1,3 +1,59 @@
 run:
     {mvn spring-boot:run}
-    {& 'E:\Program Files\JDKVer\jdk-21\bin\java.exe' '@C:\Users\nadad\AppData\Local\Temp\cp_61cffi5ez0wnmb7rpyi9m46sc.argfile' 'com.example.demo.DemoApplication'}
+clean install:
+    {mvn clean install}
+
+-----------------------------------------------------------------------------------------------------------
+
+JPA naming rule (
+    Spring Data has standard naming rules for automatically generating queries.
+    Method names should follow common Spring Data patterns such as:
+
+    findBy...: Search by attribute.
+    countBy...: Count the number by attribute.
+    existsBy...: Checks existence by attribute.
+    deleteBy...: Delete by attribute.
+)
+
+JPA built-in methods(
+
+    * Save or update
+
+    save(S entity)
+    saveAndFlush(S entity)
+    saveAll(Iterable<S> entities)
+    saveAllAndFlush(Iterable<S> entities)
+
+    * Search
+
+    findById(ID id)
+    existsById(ID id)
+    findAll()
+    findAllById(Iterable<ID> ids)
+    findAll(Sort sort)
+    findAll(Pageable pageable)
+    findOne(Specification<T> spec)
+    findAll(Specification<T> spec)
+    findAll(Specification<T> spec, Pageable pageable)
+    findAll(Specification<T> spec, Sort sort)
+
+    * Count and check existence
+
+    count()
+    existsById(ID id)
+    count(Specification<T> spec)
+    
+    * Erase(tẩy, xóa)
+
+    deleteById(ID id)
+    delete(T entity)
+    deleteAll(Iterable<? extends T> entities)
+    deleteAll()
+    deleteAllInBatch()
+    deleteAllById(Iterable<? extends ID> ids)
+    deleteAllInBatch(Iterable<T> entities)
+
+    * Refresh
+
+    flush()
+)
