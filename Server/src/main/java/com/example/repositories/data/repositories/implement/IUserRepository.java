@@ -1,7 +1,5 @@
 package com.example.repositories.data.repositories.implement;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Repository;
 
 import com.example.repositories.data.entities.User;

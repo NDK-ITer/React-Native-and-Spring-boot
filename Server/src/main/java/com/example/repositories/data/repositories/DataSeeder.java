@@ -25,10 +25,12 @@ public class DataSeeder implements CommandLineRunner{
         if (roleRepository.count() == 0) {
             Role adminRole = new Role();
             adminRole.setNormalizeName("ADMIN");
+            adminRole.setName("Admin");
             roleRepository.save(adminRole);
 
             Role userRole = new Role();
             userRole.setNormalizeName("USER");
+            adminRole.setName("User");
             roleRepository.save(userRole);
         }
     }

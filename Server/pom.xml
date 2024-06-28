@@ -50,6 +50,17 @@
 		</dependency>
 		<dependency>
 			<groupId>
+				com.fasterxml.jackson.core
+			</groupId>
+			<artifactId>
+				jackson-databind
+			</artifactId>
+			<version>
+				2.15.2
+			</version>
+		</dependency>
+		<dependency>
+			<groupId>
 				org.springframework.security
 			</groupId>
 			<artifactId>
@@ -58,7 +69,6 @@
 			<version>
 				6.2.1
 			</version>
-			<!-- Đảm bảo chọn phiên bản phù hợp nhất -->
 		</dependency>
 		<dependency>
 			<groupId>

@@ -50,6 +50,10 @@ public class User {
     //#endregion
 
     //#region getter setter
+
+    public String getId(){
+        return this.id;
+    }
     
     public String getRouteCode() {
         return this.routeCode;
