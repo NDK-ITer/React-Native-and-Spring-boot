@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 const instance = axios.create({
     baseURL: `http://localhost:7001/`,
     timeout: 15000,
-    withCredentials: false
+    withCredentials: true
 });
 
 instance.interceptors.request.use(function (config) {
@@ -22,6 +22,7 @@ instance.interceptors.response.use(function (res) {
     return res.data;
 }, function (error) {
     toast(error);
+    return Promise.reject(error);
 });
 
 export default instance;

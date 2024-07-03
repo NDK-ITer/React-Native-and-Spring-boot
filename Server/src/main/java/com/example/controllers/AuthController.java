@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.repositories.application.common.SecurityMethod;
@@ -30,8 +31,6 @@ public class AuthController {
     // #endregion
 
     // #region action
-    
-    @PostMapping("/sign-up")
     // req body
     /*
      * email
@@ -41,6 +40,7 @@ public class AuthController {
      * password
      * dob
      */
+    @PostMapping("/sign-up")
     public CompletableFuture<Object> SignUp(@RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
@@ -52,7 +52,7 @@ public class AuthController {
                 registerModel.lastName = req.get("lastName").toString();
                 registerModel.password = req.get("password").toString();
                 registerModel.dob = req.get("dob").toString();
-                //send email
+                // send email
                 emailService.sendEmail(
                         "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                         "Verify Email",
@@ -70,12 +70,12 @@ public class AuthController {
         });
     }
 
-    @PostMapping("/sign-in")
     // req body
     /*
      * email
      * password
      */
+    @PostMapping("/sign-in")
     public CompletableFuture<Object> SignIn(@RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
@@ -110,11 +110,11 @@ public class AuthController {
         });
     }
 
-    @PostMapping("/forgot-password")
     // req body
     /*
      * email
      */
+    @PostMapping("/forgot-password")
     public CompletableFuture<Object> ForgotPassword(HttpSession session, @RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
@@ -124,7 +124,7 @@ public class AuthController {
                 if (checkingResult) {
                     // generate OTP
                     String otp = SecurityMethod.generateOTP(10);
-                    //send OTP to email
+                    // send OTP to email
                     emailService.sendEmail(
                             "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                             "Forgot Password",
@@ -136,7 +136,7 @@ public class AuthController {
                     var user = userService.GetUserByEmail(email);
                     var tokenResetPassword = SecurityMethod.generateTokenAccess(user.getId(), user.getTokenAccess());
                     // add OTP and tokenResetPassword to session
-                    var timeOut = 180;
+                    var timeOut = 210;
                     session.setMaxInactiveInterval(timeOut);
                     session.setAttribute(otp, tokenResetPassword);
                     session.setAttribute(tokenResetPassword, user.getTokenAccess());
@@ -144,6 +144,7 @@ public class AuthController {
                     var data = new HashMap<String, Object>();
                     data.put("time", String.valueOf(timeOut / 2));
                     res.put("state", String.valueOf(1));
+                    res.put("data", data);
                     res.put("mess", "OTP have been sent, please check your email");
                 } else {
                     res.put("state", String.valueOf(0));
@@ -157,11 +158,11 @@ public class AuthController {
         });
     }
 
-    @PostMapping("/verify-otp")
     // req body
     /*
      * otp
      */
+    @PostMapping("/verify-otp")
     public CompletableFuture<Object> VerifyOTP(HttpSession session, @RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
@@ -171,15 +172,58 @@ public class AuthController {
                 var dataSession = session.getAttribute(otp);
                 // checking
                 if (dataSession != null) {
-                    String tokenAccess = (String) dataSession;
+                    String tokenResetPassword = (String) dataSession;
+                    // prepare data res
                     var data = new HashMap<String, Object>();
-                    data.put("tokenAccess", tokenAccess);
+                    data.put("tokenResetPassword", tokenResetPassword);
                     res.put("state", String.valueOf(1));
                     res.put("data", data);
                     res.put("mess", "");
                 } else {
                     res.put("state", String.valueOf(0));
                     res.put("mess", "wrong OTP");
+                }
+            } catch (Exception e) {
+                res.put("state", String.valueOf(-1));
+                res.put("mess", "Registration failed: " + e.getMessage());
+            }
+            return res;
+        });
+    }
+    //req body
+    /*
+     * newPassword
+     */
+    //req param
+    /*
+     * tokenResetPassword
+     */
+    @PostMapping("/reset-password")
+    public CompletableFuture<Object> ChangePassword(
+            HttpSession session,
+            @RequestBody Map<String, String> req,
+            @RequestParam String tokenResetPassword) {
+        return CompletableFuture.supplyAsync(() -> {
+            var res = new HashMap<String, Object>();
+            try {
+                var newPassword = req.get("newPassword");
+                var dataSession = session.getAttribute(tokenResetPassword);
+                // checking token in session
+                if (dataSession != null) {
+                    String tokenAccess = (String) dataSession;
+                    // reset password
+                    var result = userService.ResetPassword(tokenAccess, newPassword);
+                    //prepare data res
+                    if (result) {
+                        res.put("state", String.valueOf(1));
+                        res.put("mess", "password reset successful!");
+                    }else{
+                        res.put("state", String.valueOf(0));
+                        res.put("mess", "password reset fail!");
+                    }
+                } else {
+                    res.put("state", String.valueOf(0));
+                    res.put("mess", "password reset expires!");
                 }
             } catch (Exception e) {
                 res.put("state", String.valueOf(-1));

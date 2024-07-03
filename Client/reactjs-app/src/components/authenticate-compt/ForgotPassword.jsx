@@ -13,22 +13,27 @@ import { Link, useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import LoopIcon from '@mui/icons-material/Loop';
+import * as React from 'react-bootstrap';
+import CountdownTimer from '../common-compt/CountdownTimer';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [otp, setOTP] = useState('')
     const [isLoading, setLoading] = useState(false);
     const [isVerifyOTP, setIsVerifyOTP] = useState(false);
+    const [timeOut, setTimeOut] = useState();
+    const [enableGetOTP, setEnableGetOTP] = useState(false)
 
     const nag = useNavigate()
 
     const getOTP = async () => {
         setLoading(true);
         try {
-            const res = await forgotPass({ Email: email });
-            console.log(res);
+            const res = await forgotPass({ email: email });
             if (res.state == 1) {
                 toast.success(res.mess);
+                setTimeOut(parseInt(res.data.time, 10));
                 setIsVerifyOTP(true);
             } else {
                 toast.warning(res.mess);
@@ -43,9 +48,10 @@ const ForgotPassword = () => {
     const verifyOTP = async () => {
         setLoading(true);
         try {
-            const res = await VerifyOTP({ OTP: otp });
+            const res = await VerifyOTP({ otp: otp });
             if (res.state == 1) {
-                nag('/auth/reset-password')
+                const token = res.data.tokenResetPassword;
+                nag(`/auth/reset-password?token=${token}`)
             } else {
                 toast.warning(res.mess);
             }
@@ -79,7 +85,7 @@ const ForgotPassword = () => {
             <Typography component="h1" variant="h5">
                 {isVerifyOTP ? "Verify OTP" : "Forgot Password"}
             </Typography>
-            <div style={{marginTop:'5%'}}>
+            <div style={{ marginTop: '5%' }}>
                 {isVerifyOTP ? <>
                     <div>
                         {email}
@@ -92,14 +98,38 @@ const ForgotPassword = () => {
             </div>
             <Box component="form" noValidate sx={{ mt: 5 }}>
                 {isVerifyOTP ? <>
+
                     <TextField
                         margin="normal"
                         required
-                        fullWidth
                         label="OTP"
                         value={otp}
                         onChange={(e) => setOTP(e.target.value)}
+                        style={{
+                            maxWidth: "86%",
+                            minWidth: "84%",
+                            width: "auto",
+                        }}
                     />
+                    <React.Button
+                        disabled={!enableGetOTP}
+                        onClick={() => { getOTP(); setEnableGetOTP(false) }}
+                        variant="outline-primary"
+                        style={{
+                            marginTop: "4%",
+                            fontWeight: "bolder",
+                            fontSize: "80%",
+                            marginLeft: "3%",
+                            width: '12%',
+                        }}
+                    >
+                        <CountdownTimer
+                            setState={setEnableGetOTP}
+                            setTimeCount={setTimeOut}
+                            timeCount={timeOut}
+                        /><LoopIcon />
+                    </React.Button>
+
                 </> : <>
                     <TextField
                         margin="normal"

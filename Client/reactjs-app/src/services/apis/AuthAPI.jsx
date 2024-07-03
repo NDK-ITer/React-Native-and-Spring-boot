@@ -22,19 +22,26 @@ const Register = (props) => {
 
 const ForgotPassword = (props) => {
     return Root.post(`/api/${controller}/forgot-password`, {
-        email: props.Email,
+        email: props.email,
     })
 }
 
 const VerifyOTP = (props) => {
     return Root.post(`/api/${controller}/verify-otp`, {
-        otp: props.OTP,
+        otp: props.otp,
     })
 }
+
+const ResetPassword = (props) => {
+    return Root.post(`/api/${controller}/reset-password?tokenResetPassword=${props.token}`, {
+        newPassword: props.newPassword
+    })
+} 
 
 export {
     Login,
     Register,
     VerifyOTP,
-    ForgotPassword
+    ForgotPassword,
+    ResetPassword
 }

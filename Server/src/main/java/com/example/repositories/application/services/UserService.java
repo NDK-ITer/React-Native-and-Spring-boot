@@ -32,28 +32,30 @@ public class UserService {
     // #region Checking
     public boolean IsExistById(String id) {
         var user = userRepository.findById(id);
-        if(user == null) return false;
+        if (user == null)
+            return false;
         return true;
     }
 
     public boolean IsExistByEmail(String email) {
         var user = userRepository.findByEmail(email);
-        if(user == null) return false;
+        if (user == null)
+            return false;
         return true;
     }
     // #endregion
-    
+
     // #region Business
     public Page<User> GetAllUser(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public User GetUserById (String id){
+    public User GetUserById(String id) {
         var user = userRepository.findById(id);
         return user.get();
     }
 
-    public User GetUserByEmail (String email){
+    public User GetUserByEmail(String email) {
         var user = userRepository.findByEmail(email);
         return user;
     }
@@ -72,7 +74,7 @@ public class UserService {
         newUser.setRole(role);
         newUser.setTokenAccess(SecurityMethod.generateTokenAccess());
         newUser.setRouteCode(SecurityMethod.generateOTP(10));
-        //save new user
+        // save new user
         var result = userRepository.save(newUser);
         return result;
     }
@@ -93,6 +95,15 @@ public class UserService {
             result.put("token", jwt);
         }
         return result;
+    }
+
+    public boolean ResetPassword(String tokenAccess, String newPassword) {
+        if ((tokenAccess.isEmpty() || tokenAccess == null) && (newPassword.isEmpty() || newPassword == null))
+            return false;
+        var user = userRepository.findByTokenAccess(tokenAccess);
+        user.setPasswordHash(SecurityMethod.encodePassword(newPassword));
+        userRepository.save(user);
+        return true;
     }
     // #endregion
 }
