@@ -9,4 +9,5 @@ import com.example.repositories.data.repositories.IBaseRepository;
 public interface IUserRepository extends IBaseRepository<User, String> {
     User findByEmail(String email);
     User findByRouteCode(String userName);
+    User findByTokenAccess(String tokenAccess);
 }

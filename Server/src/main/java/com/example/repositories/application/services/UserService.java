@@ -20,19 +20,48 @@ import com.example.repositories.data.repositories.implement.IUserRepository;
 @Service
 public class UserService {
 
+    // #region Repositories
     @Autowired
     private IUserRepository userRepository;
     @Autowired
     private IRoleRepository roleRepository;
     @Autowired
     private JWTMethod jwtMethod;
+    // #endregion
 
+    // #region Checking
+    public boolean IsExistById(String id) {
+        var user = userRepository.findById(id);
+        if(user == null) return false;
+        return true;
+    }
+
+    public boolean IsExistByEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if(user == null) return false;
+        return true;
+    }
+    // #endregion
+    
+    // #region Business
     public Page<User> GetAllUser(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
+    public User GetUserById (String id){
+        var user = userRepository.findById(id);
+        return user.get();
+    }
+
+    public User GetUserByEmail (String email){
+        var user = userRepository.findByEmail(email);
+        return user;
+    }
+
     public User Register(RegisterModel registerModel) {
+        // get role with default id USER
         var role = roleRepository.findByNormalizeName("USER");
+        // create new user
         var newUser = new User();
         newUser.setEmail(registerModel.email);
         newUser.setDisplayName(registerModel.displayName);
@@ -43,7 +72,7 @@ public class UserService {
         newUser.setRole(role);
         newUser.setTokenAccess(SecurityMethod.generateTokenAccess());
         newUser.setRouteCode(SecurityMethod.generateOTP(10));
-
+        //save new user
         var result = userRepository.save(newUser);
         return result;
     }
@@ -51,17 +80,19 @@ public class UserService {
     public HashMap<String, String> Login(LoginModel loginModel) {
         var result = new HashMap<String, String>();
         var user = userRepository.findByEmail(loginModel.email);
-        if(user == null) return null;
+        if (user == null)
+            return null;
         String jwt = "";
         result.put("displayName", user.getDisplayName());
         result.put("avatar", user.getAvatar());
         if (SecurityMethod.checkPassword(loginModel.password, user.getPasswordHash())) {
             var payload = new HashMap<String, String>();
-            payload.put("id", user.getId());
+            payload.put("tokenAccess", user.getTokenAccess());
             payload.put("role", user.getRole().getNormalizeName());
             jwt = jwtMethod.generateJwtToken(payload);
             result.put("token", jwt);
         }
         return result;
     }
+    // #endregion
 }

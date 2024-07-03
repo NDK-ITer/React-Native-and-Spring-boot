@@ -1,6 +1,6 @@
 import Root from '../Root';
 
-const controller = 'auth'
+const controller = 'authenticate'
 
 const Login = (props) => {
     return Root.post(`/api/${controller}/sign-in`, {
@@ -20,7 +20,21 @@ const Register = (props) => {
     })
 }
 
+const ForgotPassword = (props) => {
+    return Root.post(`/api/${controller}/forgot-password`, {
+        email: props.Email,
+    })
+}
+
+const VerifyOTP = (props) => {
+    return Root.post(`/api/${controller}/verify-otp`, {
+        otp: props.OTP,
+    })
+}
+
 export {
     Login,
-    Register
+    Register,
+    VerifyOTP,
+    ForgotPassword
 }
