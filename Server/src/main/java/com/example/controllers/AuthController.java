@@ -232,10 +232,4 @@ public class AuthController {
             return res;
         });
     }
-
-    // @PostMapping("/change-password")
-    // public Object ChangePassword(@RequestBody Map<String, String> req){
-
-    // }
-    // #endregion
 }
