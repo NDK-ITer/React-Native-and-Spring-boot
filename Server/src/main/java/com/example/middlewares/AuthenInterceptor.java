@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.example.repositories.application.libs.JWTMethod;
-import com.example.repositories.data.repositories.implement.IUserRepository;
+import com.example.business.application.libs.JWTMethod;
+import com.example.business.data.repositories.implement.IUserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;

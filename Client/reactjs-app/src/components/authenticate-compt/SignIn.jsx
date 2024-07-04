@@ -29,7 +29,6 @@ const SignIn = () => {
             })
             if (res.state == 1) {
                 login(res.data);
-                toast.success(res.mess);
             } else if (res.state == 0) {
                 toast.warning(res.mess);
             }

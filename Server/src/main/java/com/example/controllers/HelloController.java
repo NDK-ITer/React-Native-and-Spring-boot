@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.example.repositories.application.services.EmailService;
+import com.example.business.application.services.EmailService;
 
 import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;

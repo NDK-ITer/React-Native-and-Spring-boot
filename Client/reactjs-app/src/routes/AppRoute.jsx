@@ -1,12 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import AuthPage from "../pages/AuthPage";
-import HomePage from "../pages/HomePage";
+import PublicPage from "../pages/PublicPage";
+import VerifyEmail from "../components/VerifyEmail";
 
 const AppRoute = () => {
     return (<>
         <Routes>
             <Route path='/auth/*' element={<AuthPage/>} />
-            <Route path='/' element={<HomePage/>}/>
+            <Route path='/' element={<PublicPage/>}/>
+            <Route path='/verify-email' element={<VerifyEmail/>}/>
         </Routes>
     </>)
 }

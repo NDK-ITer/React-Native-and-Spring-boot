@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.repositories.application.common.SecurityMethod;
-import com.example.repositories.application.models.userModels.LoginModel;
-import com.example.repositories.application.models.userModels.RegisterModel;
-import com.example.repositories.application.services.EmailService;
-import com.example.repositories.application.services.UserService;
+import com.example.business.application.common.SecurityMethod;
+import com.example.business.application.models.userModels.LoginModel;
+import com.example.business.application.models.userModels.RegisterModel;
+import com.example.business.application.services.EmailService;
+import com.example.business.application.services.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/authenticate")
@@ -39,9 +41,10 @@ public class AuthController {
      * lastName
      * password
      * dob
+     * clientURL
      */
     @PostMapping("/sign-up")
-    public CompletableFuture<Object> SignUp(@RequestBody Map<String, String> req) {
+    public CompletableFuture<Object> SignUp(HttpSession session, @RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
             try {
@@ -52,16 +55,97 @@ public class AuthController {
                 registerModel.lastName = req.get("lastName").toString();
                 registerModel.password = req.get("password").toString();
                 registerModel.dob = req.get("dob").toString();
-                // send email
+                var rootUrlClient = req.get("clientURL");
+
+                var checking = userService.IsExistByEmail(registerModel.email);
+                // checking email is exist
+                if (checking) {
+                    res.put("mess", "Email already exists");
+                    res.put("state", 0);
+                    return res;
+                }
+                // register user
+                var user = userService.Register(registerModel);
+                if (user != null) {
+                    // send email
+                    var tokenVerifyEmail = SecurityMethod.generateTokenAccess();
+                    var timeOut = 210;
+                    session.setMaxInactiveInterval(timeOut);
+                    session.setAttribute(tokenVerifyEmail, user.getTokenAccess());
+                    var verifyEmailURL = String.format("%s%s", rootUrlClient, tokenVerifyEmail);
+                    emailService.sendEmail(
+                            "learntoteach2023@gmail.com", // change 'toEmail' to email in req
+                            "Verify Email",
+                            "<a href='" + verifyEmailURL + "'>Click here</a>to verify your email");
+                    // add new user
+                    // prepare data res
+                    res.put("state", String.valueOf(1));
+                    res.put("mess", "Check Your mail to verify Email!");
+                }
+
+            } catch (Exception e) {
+                res.put("state", String.valueOf(-1));
+                res.put("mess", "Registration failed: " + e.getMessage());
+            }
+            return res;
+        });
+    }
+
+    // req body
+    /*
+     * email
+     * clientURL
+     */
+    @PostMapping("/token-verify-email")
+    public CompletableFuture<Object> GetTokenVerifyEmail(HttpSession session, @RequestBody Map<String, String> req) {
+        return CompletableFuture.supplyAsync(() -> {
+            var res = new HashMap<String, Object>();
+            try {
+                var email = req.get("email");
+                var rootUrlClient = req.get("clientURL");
+                var user = userService.GetUserByEmail(email);
+                var tokenVerifyEmail = SecurityMethod.generateTokenAccess();
+                var timeOut = 210;
+                session.setMaxInactiveInterval(timeOut);
+                session.setAttribute(tokenVerifyEmail, user.getTokenAccess());
+                var verifyEmailURL = String.format("%s%s", rootUrlClient, tokenVerifyEmail);
                 emailService.sendEmail(
                         "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                         "Verify Email",
-                        String.format("<a href='%s://%s:%d'/>Click here</a>"));
-                // add new user
-                userService.Register(registerModel);
-                // prepare data res
-                res.put("state", String.valueOf(1));
-                res.put("mess", "Check Your mail to verify Email!");
+                        "<a href='" + verifyEmailURL + "'>Click here</a>to verify your email");
+            } catch (Exception e) {
+                res.put("state", String.valueOf(-1));
+                res.put("mess", "Registration failed: " + e.getMessage());
+            }
+            return res;
+        });
+    }
+
+    // req param
+    /*
+     * token
+     */
+    @GetMapping("/verify-email")
+    public CompletableFuture<Object> VerifyEmail(HttpSession session, @RequestParam String tokenVerifyEmail) {
+        return CompletableFuture.supplyAsync(() -> {
+            var res = new HashMap<String, Object>();
+            try {
+                var dataSession = session.getAttribute(tokenVerifyEmail);
+                if (dataSession != null) {
+                    String tokenAccess = (String) dataSession;
+                    var result = userService.VerifyEmail(tokenAccess);
+                    if (result) {
+                        // prepare data res
+                        res.put("state", String.valueOf(1));
+                        res.put("mess", "verify email successful!");
+                    } else {
+                        res.put("state", String.valueOf(0));
+                        res.put("mess", "verify email fail!");
+                    }
+                } else {
+                    res.put("state", String.valueOf(0));
+                    res.put("mess", "verify email expired");
+                }
             } catch (Exception e) {
                 res.put("state", String.valueOf(-1));
                 res.put("mess", "Registration failed: " + e.getMessage());
@@ -76,8 +160,14 @@ public class AuthController {
      * password
      */
     @PostMapping("/sign-in")
-    public CompletableFuture<Object> SignIn(@RequestBody Map<String, String> req) {
+    public CompletableFuture<Object> SignIn(HttpServletRequest request, @RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
+            String scheme = request.getScheme(); // http or https
+            String serverName = request.getServerName(); // localhost or domain name
+            int serverPort = request.getServerPort(); // 8080, 80, 443, etc.
+
+            // Construct the base URL
+            String baseUrl = scheme + "://" + serverName + ":" + serverPort;
             var res = new HashMap<String, Object>();
             try {
                 var loginModel = new LoginModel();
@@ -85,6 +175,7 @@ public class AuthController {
                 loginModel.password = req.get("password");
                 // login
                 var result = userService.Login(loginModel);
+                result.put("avatar", baseUrl + "/public/" + result.get("avatar"));
                 // checking
                 if (result != null) {
                     if (result.get("token") != null) {
@@ -190,11 +281,12 @@ public class AuthController {
             return res;
         });
     }
-    //req body
+
+    // req body
     /*
      * newPassword
      */
-    //req param
+    // req param
     /*
      * tokenResetPassword
      */
@@ -213,11 +305,11 @@ public class AuthController {
                     String tokenAccess = (String) dataSession;
                     // reset password
                     var result = userService.ResetPassword(tokenAccess, newPassword);
-                    //prepare data res
+                    // prepare data res
                     if (result) {
                         res.put("state", String.valueOf(1));
                         res.put("mess", "password reset successful!");
-                    }else{
+                    } else {
                         res.put("state", String.valueOf(0));
                         res.put("mess", "password reset fail!");
                     }
@@ -232,4 +324,5 @@ public class AuthController {
             return res;
         });
     }
+
 }

@@ -1,5 +1,7 @@
 import Root from '../Root';
+import { format, parseISO } from 'date-fns';
 
+const rootUrlClient = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const controller = 'authenticate'
 
 const Login = (props) => {
@@ -10,13 +12,16 @@ const Login = (props) => {
 }
 
 const Register = (props) => {
+    const parsedDate = parseISO(props.dob.toString());
+    const formattedDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss");
     return Root.post(`/api/${controller}/sign-up`, {
         email: props.email,
         displayName: props.displayName,
         firstName: props.firstName,
         lastName: props.lastName,
         password: props.password,
-        dob: props.dob.toString()
+        clientURL: `${rootUrlClient}/verify-email?token=`,
+        dob: formattedDate
     })
 }
 
@@ -38,10 +43,15 @@ const ResetPassword = (props) => {
     })
 } 
 
+const VerifyEmail = (props) => {
+    return Root.get(`/api/${controller}/verify-email?tokenVerifyEmail=${props.token}`)
+}
+
 export {
     Login,
     Register,
     VerifyOTP,
     ForgotPassword,
-    ResetPassword
+    ResetPassword,
+    VerifyEmail
 }

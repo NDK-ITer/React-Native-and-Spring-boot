@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.repositories.application.libs.JWTMethod;
+import com.example.business.application.libs.JWTMethod;
 
 @Configuration
 public class JWTConfig {

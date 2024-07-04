@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = "com.example.repositories.data.repositories.implement")
+@EnableJpaRepositories(basePackages = "com.example.business.data.repositories.implement")
 public class Application {
 
 	@Value("${server.port}")

@@ -8,8 +8,10 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
 import { Register } from '../../services/apis/AuthAPI';
+import { toast } from 'react-toastify';
+import CircularProgress from '@mui/material/CircularProgress';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const SignUp = () => {
     const [email, setEmail] = useState('')
@@ -18,10 +20,32 @@ const SignUp = () => {
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const handleSubmit = (event) => {
-        event.preventDefault();
 
-    };
+    const [isLoading, setLoading] = useState(false);
+
+    const registerUser = async () => {
+        setLoading(true);
+        try {
+            const res = await Register({
+                email: email,
+                displayName: displayName,
+                firstName: firstName,
+                lastName: lastName,
+                password: password,
+                dob: new Date().toISOString(),
+            })
+            if (res.state == 1) {
+                toast.success(res.mess);
+            }
+            else {
+                toast.warning(res.mess);
+            }
+        } catch (error) {
+            toast.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (<>
         <CssBaseline />
@@ -44,7 +68,7 @@ const SignUp = () => {
             <Typography component="h1" variant="h5">
                 Sign up
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Box component="form" noValidate sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
@@ -123,12 +147,16 @@ const SignUp = () => {
                     </Grid>
                 </Grid>
                 <Button
-                    type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
+                    onClick={async () => await registerUser()}
                 >
-                    Sign Up
+                    {isLoading ? <>
+                        <CircularProgress color='inherit' size={25} />
+                    </> : <>
+                        <KeyboardArrowUpIcon />
+                    </>}Sign Up
                 </Button>
                 <Grid container justifyContent="flex-end">
                     <Grid item xs>

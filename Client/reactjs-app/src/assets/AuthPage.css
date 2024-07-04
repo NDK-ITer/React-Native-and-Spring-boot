@@ -1,7 +1,0 @@
-.get-otp{
-    display: inline-block;
-    transition: filter 0.3s ease;
-}
-.get-otp:hover{
-    filter: brightness(0.7);
-}
