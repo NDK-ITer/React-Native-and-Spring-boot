@@ -19,7 +19,6 @@ public class UserInformationPast {
     private String id;
     private String lastPhoneNumber;
     private String lastEmail;
-
     @CreatedDate
     private LocalDateTime dateChange;
     @ManyToOne

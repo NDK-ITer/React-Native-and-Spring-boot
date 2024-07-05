@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { VerifyEmail as verifyEmail } from "../services/apis/AuthAPI";
+import background from "../assets/images/verify-email-background.png";
+import { Player } from '@lottiefiles/react-lottie-player';
+import SuccessfulVerify from "../assets/animation/verify-email-successful-animation.json";
+import LoadingVerify from "../assets/animation/verify-email-loading-animation.json";
+import FailVerify from "../assets/animation/verify-email-fail-animation.json";
 
 const VerifyEmail = () => {
     const location = useLocation();
@@ -32,7 +37,6 @@ const VerifyEmail = () => {
 
     useEffect(() => {
         if (token) {
-            console.log(token);
             getVerifyEmail()
         } else {
             setIsLoading(false)
@@ -40,9 +44,79 @@ const VerifyEmail = () => {
         }
     }, [])
     return (<>
-        {isLoading && <div>Processing {response && response.mess}</div>}
-        {!isLoading && verifyEmailSuccessful && <div>Successful {response && response.mess}</div>}
-        {!isLoading && !verifyEmailSuccessful && <div>Fail {response && response.mess}</div>}
+        <div style={{
+            display: "flex",
+            minWidth: "100vw",
+            minHeight: "100vh",
+            backgroundImage: `url(${background})`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+        }}>
+            <div style={{
+                margin: "auto",
+                borderRadius: "10%",
+                backgroundColor: "#FFFFFFBE",
+                height: "80vh",
+                minWidth: "300px",
+                width: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}>
+                {isLoading &&
+                    <div>
+                        <Player
+                            autoplay
+                            loop
+                            src={LoadingVerify}
+                        >
+                        </Player>
+                        <h2 style={{
+                            textAlign: "center",
+                            fontWeight: "bolder",
+                            color: "yellow",
+                        }}>
+                            Processing...
+                        </h2>
+                    </div>
+                }
+                {!isLoading && verifyEmailSuccessful &&
+                    <div>
+                        <Player
+                            autoplay
+                            loop
+                            src={SuccessfulVerify}
+                        >
+                        </Player>
+                        <h2 style={{
+                            textAlign: "center",
+                            fontWeight: "bolder",
+                            color: "green",
+                        }}>
+                            {response && response.mess}
+                        </h2>
+                    </div>
+                }
+                {!isLoading && !verifyEmailSuccessful &&
+                    <div>
+                        <Player
+                            autoplay
+                            loop
+                            src={FailVerify}
+                        >
+                        </Player>
+                        <h2 style={{
+                            textAlign: "center",
+                            fontWeight: "bolder",
+                            color: "red",
+                        }}>
+                            {response && response.mess}
+                        </h2>
+                    </div>
+                }
+            </div>
+        </div>
     </>)
 }
 

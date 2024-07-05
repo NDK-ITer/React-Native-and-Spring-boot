@@ -11,7 +11,7 @@ const AuthPage = () => {
     const navigate = useNavigate()
     useEffect(() => {
         if (user) {
-            navigate('/')
+            navigate(-1);
         }
     })
     return (<>

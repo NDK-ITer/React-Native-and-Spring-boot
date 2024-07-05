@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd" updateCheck="false">
+	<defaultCache eternal="false" maxEntriesLocalHeap="1000" timeToIdleSeconds="300" timeToLiveSeconds="600">
+	</defaultCache>
+	<!-- Define caches here -->
+	<cache name="myCache" maxEntriesLocalHeap="100" eternal="false" timeToIdleSeconds="300" timeToLiveSeconds="600">
+	</cache>
+</ehcache>

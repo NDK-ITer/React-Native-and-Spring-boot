@@ -19,7 +19,6 @@ import com.example.business.application.services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/authenticate")
@@ -44,7 +43,7 @@ public class AuthController {
      * clientURL
      */
     @PostMapping("/sign-up")
-    public CompletableFuture<Object> SignUp(HttpSession session, @RequestBody Map<String, String> req) {
+    public CompletableFuture<Object> SignUp(@RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
             try {
@@ -64,20 +63,17 @@ public class AuthController {
                     res.put("state", 0);
                     return res;
                 }
-                // register user
+                // add new user
                 var user = userService.Register(registerModel);
                 if (user != null) {
                     // send email
-                    var tokenVerifyEmail = SecurityMethod.generateTokenAccess();
-                    var timeOut = 210;
-                    session.setMaxInactiveInterval(timeOut);
-                    session.setAttribute(tokenVerifyEmail, user.getTokenAccess());
+                    var tokenVerifyEmail = user.getTokenVerifyEmail();
                     var verifyEmailURL = String.format("%s%s", rootUrlClient, tokenVerifyEmail);
                     emailService.sendEmail(
                             "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                             "Verify Email",
-                            "<a href='" + verifyEmailURL + "'>Click here</a>to verify your email");
-                    // add new user
+                            "<a href='" + verifyEmailURL + "'>Click here</a> to verify your email. "
+                                    + "It will be expired in " + userService.expired + " minutes");
                     // prepare data res
                     res.put("state", String.valueOf(1));
                     res.put("mess", "Check Your mail to verify Email!");
@@ -97,22 +93,19 @@ public class AuthController {
      * clientURL
      */
     @PostMapping("/token-verify-email")
-    public CompletableFuture<Object> GetTokenVerifyEmail(HttpSession session, @RequestBody Map<String, String> req) {
+    public CompletableFuture<Object> GetTokenVerifyEmail(@RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
             try {
                 var email = req.get("email");
                 var rootUrlClient = req.get("clientURL");
-                var user = userService.GetUserByEmail(email);
-                var tokenVerifyEmail = SecurityMethod.generateTokenAccess();
-                var timeOut = 210;
-                session.setMaxInactiveInterval(timeOut);
-                session.setAttribute(tokenVerifyEmail, user.getTokenAccess());
-                var verifyEmailURL = String.format("%s%s", rootUrlClient, tokenVerifyEmail);
+                var result = userService.GenerateTokenVerifyEmail(email);
+                var verifyEmailURL = String.format("%s%s", rootUrlClient, result);
                 emailService.sendEmail(
                         "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                         "Verify Email",
-                        "<a href='" + verifyEmailURL + "'>Click here</a>to verify your email");
+                        "<a href='" + verifyEmailURL + "'>Click here</a> to verify your email. "
+                                + "It will be expired in " + userService.expired + " minutes");
             } catch (Exception e) {
                 res.put("state", String.valueOf(-1));
                 res.put("mess", "Registration failed: " + e.getMessage());
@@ -125,23 +118,16 @@ public class AuthController {
     /*
      * token
      */
-    @GetMapping("/verify-email")
-    public CompletableFuture<Object> VerifyEmail(HttpSession session, @RequestParam String tokenVerifyEmail) {
+    @PostMapping("/verify-email")
+    public CompletableFuture<Object> VerifyEmail(@RequestParam String tokenVerifyEmail) {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
             try {
-                var dataSession = session.getAttribute(tokenVerifyEmail);
-                if (dataSession != null) {
-                    String tokenAccess = (String) dataSession;
-                    var result = userService.VerifyEmail(tokenAccess);
-                    if (result) {
-                        // prepare data res
-                        res.put("state", String.valueOf(1));
-                        res.put("mess", "verify email successful!");
-                    } else {
-                        res.put("state", String.valueOf(0));
-                        res.put("mess", "verify email fail!");
-                    }
+                var result = userService.VerifyEmail(tokenVerifyEmail);
+                if (result) {
+                    // prepare data res
+                    res.put("state", String.valueOf(1));
+                    res.put("mess", "verify email successful!");
                 } else {
                     res.put("state", String.valueOf(0));
                     res.put("mess", "verify email expired");
@@ -175,11 +161,11 @@ public class AuthController {
                 loginModel.password = req.get("password");
                 // login
                 var result = userService.Login(loginModel);
-                result.put("avatar", baseUrl + "/public/" + result.get("avatar"));
                 // checking
                 if (result != null) {
                     if (result.get("token") != null) {
                         // successful
+                        result.put("avatar", baseUrl + "/public/" + result.get("avatar"));
                         res.put("state", String.valueOf(1));
                         res.put("mess", "Sign-up successful!");
                         res.put("data", result);

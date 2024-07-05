@@ -2,8 +2,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -47,7 +45,7 @@ const SignIn = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 backgroundColor: '#DDDDDDAF',
-                padding: 2,
+                padding: 5,
                 borderRadius: 2,
                 boxShadow: 12,
                 maxWidth: "636.52px",
@@ -84,10 +82,6 @@ const SignIn = () => {
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                />
-                <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
                 />
                 <Button
                     onClick={async () => await loginPost()}

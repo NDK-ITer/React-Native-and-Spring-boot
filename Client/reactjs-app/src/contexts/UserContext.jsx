@@ -21,6 +21,7 @@ export const UserProvider = ({ children }) => {
 
     const logout = () => {
         Cookies.remove('user');
+        Cookies.remove("token");
         setUser(undefined);
     };
 

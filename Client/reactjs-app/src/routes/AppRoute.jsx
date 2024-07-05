@@ -7,7 +7,7 @@ const AppRoute = () => {
     return (<>
         <Routes>
             <Route path='/auth/*' element={<AuthPage/>} />
-            <Route path='/' element={<PublicPage/>}/>
+            <Route path='/*' element={<PublicPage/>}/>
             <Route path='/verify-email' element={<VerifyEmail/>}/>
         </Routes>
     </>)

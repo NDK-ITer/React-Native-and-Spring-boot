@@ -27,7 +27,10 @@ public class SecurityMethod {
     }
 
     public static String generateTokenAccess() {
-        return UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
+        String token = uuid.replaceAll("-", "").toLowerCase();
+        token = token.replaceAll("[^a-zA-Z0-9]", "");
+        return token;
     }
 
     public static String generateOTP(int length) {
@@ -44,7 +47,7 @@ public class SecurityMethod {
             SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), "HmacSHA256");
             sha256_HMAC.init(secret_key);
             byte[] bytes = sha256_HMAC.doFinal(data.getBytes());
-            return Base64.getEncoder().encodeToString(bytes);
+            return Base64.getEncoder().withoutPadding().encodeToString(bytes);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();
             return null;

@@ -1,7 +1,7 @@
-import { Routes, Route } from "react-router-dom"; 
+import { Routes, Route } from "react-router-dom";
 import UserInformation from "../../components/public-compt/body-compt/user-compt/UserInformation";
 
-const PublicRoute = () => {
+const UserRoute = () => {
     return (<>
         <Routes>
             <Route path='/my-information' element={<UserInformation/>} />
@@ -9,4 +9,4 @@ const PublicRoute = () => {
     </>)
 }
 
-export default PublicRoute
+export default UserRoute

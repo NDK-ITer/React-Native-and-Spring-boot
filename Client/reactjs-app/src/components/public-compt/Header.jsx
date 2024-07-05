@@ -1,10 +1,13 @@
-import Avatar from '@mui/material/Avatar';
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Link } from 'react-router-dom';
+
+import AuthHeader from './header-compt/AuthHeader';
+import UserHeader from './header-compt/UserHeader';
 
 const Header = () => {
     const { user } = useContext(UserContext);
+    
+
     return (<>
         <div className="header-public-container">
             <div
@@ -30,19 +33,13 @@ const Header = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    height: "100%",
                 }}
             >
                 {user ? <>
-                    <Avatar
-                        src={user.avatar}
-                        sx={{
-                            maxWidth: 54, maxHeight: 54,
-                            minWidth: 54, minHeight: 54,
-                        }}
-                    />
+                    <UserHeader/>
                 </> : <>
-                    <Link to="/auth/sign-in" className='.link-no-decoration'>Login</Link>
-                    <Link to="/auth/sign-up" className='.link-no-decoration'>Register</Link>
+                    <AuthHeader/>
                 </>}
             </div>
         </div>

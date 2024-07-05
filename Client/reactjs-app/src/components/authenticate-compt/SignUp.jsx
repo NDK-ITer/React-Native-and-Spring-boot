@@ -24,26 +24,30 @@ const SignUp = () => {
     const [isLoading, setLoading] = useState(false);
 
     const registerUser = async () => {
-        setLoading(true);
-        try {
-            const res = await Register({
-                email: email,
-                displayName: displayName,
-                firstName: firstName,
-                lastName: lastName,
-                password: password,
-                dob: new Date().toISOString(),
-            })
-            if (res.state == 1) {
-                toast.success(res.mess);
+        if (confirmPassword != password) {
+            return;
+        } else {
+            setLoading(true);
+            try {
+                const res = await Register({
+                    email: email,
+                    displayName: displayName,
+                    firstName: firstName,
+                    lastName: lastName,
+                    password: password,
+                    dob: new Date().toISOString(),
+                })
+                if (res.state == 1) {
+                    toast.success(res.mess);
+                }
+                else {
+                    toast.warning(res.mess);
+                }
+            } catch (error) {
+                toast.error(error);
+            } finally {
+                setLoading(false);
             }
-            else {
-                toast.warning(res.mess);
-            }
-        } catch (error) {
-            toast.error(error);
-        } finally {
-            setLoading(false);
         }
     }
 
@@ -144,6 +148,15 @@ const SignUp = () => {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
+                        <div>
+                            {(password !== confirmPassword) && (
+                                <>
+                                    <Typography color="error" sx={{ mt: 1 }}>
+                                        * password is not confirm
+                                    </Typography>
+                                </>
+                            )}
+                        </div>
                     </Grid>
                 </Grid>
                 <Button

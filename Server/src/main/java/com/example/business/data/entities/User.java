@@ -4,14 +4,17 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -36,10 +39,12 @@ public class User {
     private String phoneNumber;
     private String passwordHash;
     private String tokenAccess;
+    private String tokenVerifyEmail;
     private String avatar;
     private boolean isVerified;
     private boolean isLock;
     private LocalDateTime verifiedDate;
+    private LocalDateTime tokenVerifyEmailExpired;
     private LocalDateTime dob;
     @CreatedDate
     private LocalDateTime createdDate;
@@ -47,6 +52,10 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+    private List<UserJWT> listJWT;
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+    private List<UserInformationPast> listOldInformation;
     //#endregion
 
     //#region getter setter
@@ -119,6 +128,14 @@ public class User {
         this.tokenAccess = tokenAccess;
     }
 
+    public String getTokenVerifyEmail() {
+        return this.tokenVerifyEmail;
+    }
+
+    public void setTokenVerifyEmail(String tokenVerifyEmail) {
+        this.tokenVerifyEmail = tokenVerifyEmail;
+    }
+
     public String getAvatar() {
         return this.avatar;
     }
@@ -153,6 +170,14 @@ public class User {
 
     public LocalDateTime getVerifiedDate() {
         return this.verifiedDate;
+    }
+
+    public LocalDateTime getTokenVerifyEmailExpired() {
+        return this.tokenVerifyEmailExpired;
+    }
+
+    public void setTokenVerifyEmailExpired(LocalDateTime tokenVerifyEmailExpired) {
+        this.tokenVerifyEmailExpired = tokenVerifyEmailExpired;
     }
 
     public void setVerifiedDate(LocalDateTime verifiedDate) {

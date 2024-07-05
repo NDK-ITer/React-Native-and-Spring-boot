@@ -29,10 +29,11 @@ public class UserService {
     private IUserRepository userRepository;
     @Autowired
     private IRoleRepository roleRepository;
+    // #endregion
     @Autowired
     private JWTMethod jwtMethod;
-    // #endregion
-
+    
+    public final int expired = 5;
     // #region Checking
     public boolean IsExistById(String id) {
         var user = userRepository.findById(id);
@@ -82,6 +83,8 @@ public class UserService {
         newUser.setAvatar(avatar);
         newUser.setRole(role);
         newUser.setTokenAccess(SecurityMethod.generateTokenAccess());
+        newUser.setTokenVerifyEmail(SecurityMethod.generateTokenAccess());
+        newUser.setTokenVerifyEmailExpired(LocalDateTime.now().plusMinutes(expired));
         newUser.setRouteCode(SecurityMethod.generateOTP(10));
         // save new user
         var result = userRepository.save(newUser);
@@ -96,7 +99,9 @@ public class UserService {
         String jwt = "";
         result.put("displayName", user.getDisplayName());
         result.put("avatar", user.getAvatar());
+        result.put("routeCode", user.getRouteCode());
         if (SecurityMethod.checkPassword(loginModel.password, user.getPasswordHash())) {
+            // generate JWT
             var payload = new HashMap<String, String>();
             payload.put("tokenAccess", user.getTokenAccess());
             payload.put("role", user.getRole().getNormalizeName());
@@ -117,16 +122,33 @@ public class UserService {
         return true;
     }
 
-    public boolean VerifyEmail(String tokenAccess) {
-        if (tokenAccess.isEmpty() || tokenAccess == null)
+    public boolean VerifyEmail(String tokenVerifyEmail) {
+        if (tokenVerifyEmail.isEmpty() || tokenVerifyEmail == null)
             return false;
-        var user = userRepository.findByTokenAccess(tokenAccess);
+        var user = userRepository.findByTokenVerifyEmail(tokenVerifyEmail);
         if (user == null)
+            return false;
+        if (!user.getTokenVerifyEmailExpired().isAfter(LocalDateTime.now()))
             return false;
         user.setIsVerified(true);
         user.setVerifiedDate(LocalDateTime.now());
+        user.setTokenVerifyEmail(null);
+        user.setTokenVerifyEmailExpired(null);
         userRepository.save(user);
         return true;
+    }
+
+    public String GenerateTokenVerifyEmail(String email) {
+        if (email.isEmpty() || email == null)
+            return null;
+        var user = userRepository.findByEmail(email);
+        if (user == null)
+            return null;
+        var tokenVerifyEmail = SecurityMethod.generateTokenAccess();
+        user.setTokenVerifyEmail(tokenVerifyEmail);
+        user.setTokenVerifyEmailExpired(LocalDateTime.now().plusMinutes(expired));
+        userRepository.save(user);
+        return tokenVerifyEmail;
     }
     // #endregion
 }

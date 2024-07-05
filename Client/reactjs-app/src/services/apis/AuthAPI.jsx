@@ -44,7 +44,7 @@ const ResetPassword = (props) => {
 } 
 
 const VerifyEmail = (props) => {
-    return Root.get(`/api/${controller}/verify-email?tokenVerifyEmail=${props.token}`)
+    return Root.post(`/api/${controller}/verify-email?tokenVerifyEmail=${props.token}`)
 }
 
 export {

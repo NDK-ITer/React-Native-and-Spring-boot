@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,28 +18,34 @@ const ResetPassword = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get('token');
+    const navigate = useNavigate()
 
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
     const [isLoading, setLoading] = useState(false);
 
     const userResetPassword = async () => {
-        setLoading(true);
-        try {
-            const res = await resetPassword({
-                token: token,
-                newPassword: newPassword
-            })
-            if (res.state == 1) {
-                toast.success(res.mess);
+        if (confirmNewPassword != newPassword) {
+            return;
+        } else {
+            setLoading(true);
+            try {
+                const res = await resetPassword({
+                    token: token,
+                    newPassword: newPassword
+                })
+                if (res.state == 1) {
+                    toast.success(res.mess);
+                    navigate("/auth/sign-in")
+                }
+                else {
+                    toast.warning(res.mess);
+                }
+            } catch (error) {
+                toast.error(error);
+            } finally {
+                setLoading(false);
             }
-            else {
-                toast.warning(res.mess);
-            }
-        } catch (error) {
-            toast.error(error);
-        } finally {
-            setLoading(false);
         }
     }
 

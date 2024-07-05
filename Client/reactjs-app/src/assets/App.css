@@ -44,4 +44,5 @@
 
 .link-no-decoration:hover{
   color: blue;
+  font-size: 105%;
 }
