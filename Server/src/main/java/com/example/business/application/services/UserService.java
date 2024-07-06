@@ -122,35 +122,37 @@ public class UserService {
         result.put("displayName", user.getDisplayName());
         result.put("avatar", user.getAvatar());
         result.put("routeCode", user.getRouteCode());
-        if (SecurityMethod.checkPassword(loginModel.password, user.getPasswordHash())) {
-            var userJWT = userJWTRepository.findByTokenCode(tokenCode);
-            if (userJWT != null) {
-                if (/* jwt is not expired */userJWT.getExpired().isAfter(LocalDateTime.now())) {
-                    userJWTRepository.delete(userJWT);
-                    return result;
-                }
-                result.put("token", userJWT.getToken());
-                result.put("tokenCode", userJWT.getTokenCode());
-                userJWT.setIsLogout(false);
-                userJWTRepository.save(userJWT);
-            } else {
-                // generate JWT
-                var payload = new HashMap<String, String>();
-                payload.put("tokenAccess", user.getTokenAccess());
-                payload.put("role", user.getRole().getNormalizeName());
-                var resultGenericJWT = jwtMethod.generateJwtToken(payload);
-                // store JWT
-                var tokenStore = new UserJWT();
-                tokenStore.setIsLogout(false);
-                tokenStore.setToken(resultGenericJWT.token);
-                tokenStore.setExpired(
-                        LocalDateTime.ofInstant(resultGenericJWT.dateExpired.toInstant(), ZoneId.systemDefault()));
-                tokenStore.setTokenCode(SecurityMethod.generateTokenAccess());
-                tokenStore.setUser(user);
-                var userJWTStore = userJWTRepository.save(tokenStore);
-                result.put("token", userJWTStore.getToken());
-                result.put("tokenCode", userJWTStore.getTokenCode());
-            }
+        // check password
+        var checkPassword = SecurityMethod.checkPassword(loginModel.password, user.getPasswordHash());
+        if (!checkPassword)
+            return result;
+        // get JWT from db
+        var userJWT = userJWTRepository.findByTokenCode(tokenCode);
+        if (userJWT == null || userJWT.getExpired().isBefore(LocalDateTime.now())) { // if JWT is not exist or JWT is expired
+            // deleted JWT is expired
+            if (userJWT != null)
+                userJWTRepository.delete(userJWT);
+            // generate JWT
+            var payload = new HashMap<String, String>();
+            payload.put("tokenAccess", user.getTokenAccess());
+            payload.put("role", user.getRole().getNormalizeName());
+            var resultGenericJWT = jwtMethod.generateJwtToken(payload);
+            // store JWT
+            var tokenStore = new UserJWT();
+            tokenStore.setIsLogout(false);
+            tokenStore.setToken(resultGenericJWT.token);
+            tokenStore.setExpired(
+                    LocalDateTime.ofInstant(resultGenericJWT.dateExpired.toInstant(), ZoneId.systemDefault()));
+            tokenStore.setTokenCode(SecurityMethod.generateTokenAccess());
+            tokenStore.setUser(user);
+            var userJWTStore = userJWTRepository.save(tokenStore);
+            result.put("token", userJWTStore.getToken());
+            result.put("tokenCode", userJWTStore.getTokenCode());
+        } else {
+            result.put("token", userJWT.getToken());
+            result.put("tokenCode", userJWT.getTokenCode());
+            userJWT.setIsLogout(false);
+            userJWTRepository.save(userJWT);
         }
         return result;
     }

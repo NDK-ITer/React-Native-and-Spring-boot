@@ -64,7 +64,7 @@ const UserHeader = () => {
                     horizontal: 'center',
                 }}
             >
-                <MenuItem onClick={() => { handleDropdownClose(); navigate("/my-information") }}>
+                <MenuItem onClick={() => { handleDropdownClose(); navigate("/user/my-information") }}>
                     <div sty>
                         <PermIdentityIcon style={{ marginRight: '8px' }} /> My Information
                     </div>

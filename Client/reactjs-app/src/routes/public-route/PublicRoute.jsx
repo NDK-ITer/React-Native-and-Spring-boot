@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom"; 
-import UserInformation from "../../components/public-compt/body-compt/user-compt/UserInformation";
+import UserPage from "../../pages/UserPage";
 
 const PublicRoute = () => {
     return (<>
         <Routes>
-            <Route path='/my-information' element={<UserInformation/>} />
+            <Route path='/user/*' element={<UserPage/>} />
         </Routes>
     </>)
 }

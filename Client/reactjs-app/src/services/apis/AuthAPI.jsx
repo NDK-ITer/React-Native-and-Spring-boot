@@ -9,7 +9,7 @@ const Login = (props) => {
     return Root.post(`/api/${controller}/sign-in`, {
         email: props.email,
         password: props.password,
-        idToken: Cookies.get('tokenCode'),
+        tokenCode: Cookies.get("tokenCode"),
     })
 }
 

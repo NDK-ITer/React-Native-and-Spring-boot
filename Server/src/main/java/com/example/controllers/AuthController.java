@@ -55,9 +55,8 @@ public class AuthController {
                 registerModel.password = req.get("password").toString();
                 registerModel.dob = req.get("dob").toString();
                 var rootUrlClient = req.get("clientURL");
-
-                var checking = userService.IsExistByEmail(registerModel.email);
                 // checking email is exist
+                var checking = userService.IsExistByEmail(registerModel.email);
                 if (checking) {
                     res.put("mess", "Email already exists");
                     res.put("state", 0);
