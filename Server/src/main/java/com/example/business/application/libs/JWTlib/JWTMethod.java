@@ -1,4 +1,4 @@
-package com.example.business.application.libs;
+package com.example.business.application.libs.JWTlib;
 
 import java.security.Key;
 import java.util.Date;
@@ -29,23 +29,28 @@ public class JWTMethod {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJwtToken(Map<String, String> payload) {
-        return Jwts
+    public JWTGenerateModel generateJwtToken(Map<String, String> payload) {
+        var dateExpired = new Date(System.currentTimeMillis() + jwtExpiration);
+        var jwt = Jwts
                 .builder()
                 .setClaims(payload)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .setExpiration(dateExpired)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+        var result = new JWTGenerateModel();
+        result.token = jwt;
+        result.dateExpired = dateExpired;
+        return result;
     }
 
     public Claims decodeAndVerifyJWT(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
-                                .setSigningKey(getSignInKey())
-                                .build()
-                                .parseClaimsJws(token)
-                                .getBody();
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
             return claims;
         } catch (Exception e) {
             System.err.println("Invalid JWT: " + e.getMessage());

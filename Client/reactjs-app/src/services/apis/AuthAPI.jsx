@@ -1,5 +1,6 @@
 import Root from '../Root';
 import { format, parseISO } from 'date-fns';
+import Cookies from 'js-cookie';
 
 const rootUrlClient = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const controller = 'authenticate'
@@ -8,6 +9,13 @@ const Login = (props) => {
     return Root.post(`/api/${controller}/sign-in`, {
         email: props.email,
         password: props.password,
+        idToken: Cookies.get('tokenCode'),
+    })
+}
+
+const Logout = () => {
+    return Root.post(`/api/${controller}/sign-out`,{
+        tokenCode: Cookies.get('tokenCode')
     })
 }
 
@@ -53,5 +61,6 @@ export {
     VerifyOTP,
     ForgotPassword,
     ResetPassword,
-    VerifyEmail
+    VerifyEmail,
+    Logout
 }

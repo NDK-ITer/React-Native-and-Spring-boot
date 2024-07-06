@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
     const login = (props) => {
         Cookies.set('token', props.token);
         delete props.token;
+        Cookies.set('tokenCode', props.tokenCode);
         Cookies.set('user', props);
         setUser(props);
     };

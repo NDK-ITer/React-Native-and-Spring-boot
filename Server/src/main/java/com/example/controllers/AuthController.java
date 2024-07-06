@@ -144,14 +144,14 @@ public class AuthController {
     /*
      * email
      * password
+     * tokenCode
      */
     @PostMapping("/sign-in")
     public CompletableFuture<Object> SignIn(HttpServletRequest request, @RequestBody Map<String, String> req) {
         return CompletableFuture.supplyAsync(() -> {
-            String scheme = request.getScheme(); // http or https
-            String serverName = request.getServerName(); // localhost or domain name
-            int serverPort = request.getServerPort(); // 8080, 80, 443, etc.
-
+            String scheme = request.getScheme();
+            String serverName = request.getServerName();
+            int serverPort = request.getServerPort();
             // Construct the base URL
             String baseUrl = scheme + "://" + serverName + ":" + serverPort;
             var res = new HashMap<String, Object>();
@@ -159,8 +159,13 @@ public class AuthController {
                 var loginModel = new LoginModel();
                 loginModel.email = req.get("email");
                 loginModel.password = req.get("password");
+                var tokenCode = req.get("tokenCode");
+                if (tokenCode == null || tokenCode.isEmpty()) {
+                    res.put("state", String.valueOf(0));
+                    res.put("mess", "Must be have 'tokenCode' to get token");
+                }
                 // login
-                var result = userService.Login(loginModel);
+                var result = userService.Login(loginModel, tokenCode);
                 // checking
                 if (result != null) {
                     if (result.get("token") != null) {
@@ -178,6 +183,31 @@ public class AuthController {
                     // email is not exist
                     res.put("state", String.valueOf(0));
                     res.put("mess", "Email is not exist");
+                }
+            } catch (Exception e) {
+                res.put("state", String.valueOf(-1));
+                res.put("mess", "Registration failed: " + e.getMessage());
+            }
+            return res;
+        });
+    }
+
+    // req
+    /*
+     * tokenCode
+     */
+    @PostMapping("/sign-out")
+    public CompletableFuture<Object> SignOut(@RequestBody Map<String, String> req) {
+        return CompletableFuture.supplyAsync(() -> {
+            var res = new HashMap<String, Object>();
+            try {
+                var tokenCode = req.get("tokenCode");
+                var result = userService.Logout(tokenCode);
+                if (result) {
+                    res.put("state", String.valueOf(1));
+                    // res.put("mess", "");
+                } else {
+                    res.put("state", String.valueOf(0));
                 }
             } catch (Exception e) {
                 res.put("state", String.valueOf(-1));

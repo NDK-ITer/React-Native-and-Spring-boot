@@ -6,6 +6,6 @@ import com.example.business.data.entities.UserJWT;
 import com.example.business.data.repositories.IBaseRepository;
 
 @Repository
-public interface IUserJWT extends IBaseRepository<UserJWT, String> {
-    
+public interface IUserJWTRepository extends IBaseRepository<UserJWT, String> {
+    UserJWT findByTokenCode(String tokenCode);
 }

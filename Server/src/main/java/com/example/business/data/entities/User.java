@@ -14,19 +14,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class User {
-    //#region constructor
-    public User (){
+    // #region constructor
+    public User() {
         setIsLock(false);
         setIsVerified(false);
     }
-    //#endregion
+    // #endregion
 
-    //#region properties
+    // #region properties
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -52,18 +53,34 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserJWT> listJWT;
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserInformationPast> listOldInformation;
-    //#endregion
+    // #endregion
 
-    //#region getter setter
+    // #region getter setter
 
-    public String getId(){
+    public List<UserJWT> getListJWT() {
+        return this.listJWT;
+    }
+
+    public void setListJWT(List<UserJWT> listJWT) {
+        this.listJWT = listJWT;
+    }
+
+    public List<UserInformationPast> getListOldInformation() {
+        return this.listOldInformation;
+    }
+
+    public void setListOldInformation(List<UserInformationPast> listOldInformation) {
+        this.listOldInformation = listOldInformation;
+    }
+
+    public String getId() {
         return this.id;
     }
-    
+
     public String getRouteCode() {
         return this.routeCode;
     }
@@ -199,5 +216,5 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-    //#endregion
+    // #endregion
 }

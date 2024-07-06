@@ -31,8 +31,8 @@ const AuthHeader = () => {
     }, []);
 
     const renderLinksOrMenu = () => {
-        if (windowWidth >= 600) {
-            // Hiển thị hai link
+        if (windowWidth >= 1465) {
+            // display normal
             return (
                 <>
                     <Link
@@ -65,7 +65,7 @@ const AuthHeader = () => {
                 </>
             );
         } else {
-            // Hiển thị menu
+            // display menu
             return (
                 <>
                     <IconButton

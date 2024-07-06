@@ -8,11 +8,24 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
 import PasswordIcon from '@mui/icons-material/Password';
 import { useNavigate } from 'react-router-dom';
+import { Logout } from '../../../services/apis/AuthAPI'
+import { toast } from 'react-toastify';
 
 const UserHeader = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const { user, logout } = useContext(UserContext);
     const navigate = useNavigate()
+
+    const logoutUser = async() => {
+        try {
+            const res = await Logout();
+            if(res.state == 1){
+                logout()
+            }
+        } catch (error) {
+            toast.error(error);
+        }
+    }
 
     const handleDropdownToggle = (event) => {
         setAnchorEl(event.currentTarget);
@@ -51,7 +64,7 @@ const UserHeader = () => {
                     horizontal: 'center',
                 }}
             >
-                <MenuItem onClick={() =>{handleDropdownClose();navigate("/my-information")}}>
+                <MenuItem onClick={() => { handleDropdownClose(); navigate("/my-information") }}>
                     <div sty>
                         <PermIdentityIcon style={{ marginRight: '8px' }} /> My Information
                     </div>
@@ -67,7 +80,7 @@ const UserHeader = () => {
                     </div>
                 </MenuItem>
                 <div style={{ borderTop: '1px solid #ccc', margin: '4px 0' }} />
-                <MenuItem onClick={() => logout()}>
+                <MenuItem onClick={async() => await logoutUser()}>
                     <div style={{ color: 'red' }}>
                         <LogoutIcon style={{ marginRight: '8px' }} /> Logout
                     </div>
