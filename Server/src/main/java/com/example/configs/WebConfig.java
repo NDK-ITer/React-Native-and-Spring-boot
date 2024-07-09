@@ -28,24 +28,26 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .maxAge(3600);
     }
-    //#endregion
+    // #endregion
 
-    //#region Middleware Config
+    // #region Middleware Config
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // registry.addInterceptor(signUpInterceptor)
-        //         .addPathPatterns("/api/authenticate/sign-up");
+        // .addPathPatterns("/api/authenticate/sign-up");
         registry.addInterceptor(authenInterceptor)
                 .addPathPatterns("/api/hc/**");
+        registry.addInterceptor(authenInterceptor)
+                .addPathPatterns("/api/user/**");
     }
-    //#endregion
+    // #endregion
 
-    //#region Static File Config
+    // #region Static File Config
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/public/**")
                 .addResourceLocations("classpath:/public/")
                 .setCachePeriod(3600);
     }
-    //#endregion
+    // #endregion
 }

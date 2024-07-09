@@ -19,7 +19,7 @@ public class JWTMethod {
     // #region constructor
     public JWTMethod(String secretKey, long expiration) {
         this.secretKey = secretKey;
-        jwtExpiration = expiration;
+        jwtExpiration = expiration*1000;
     }
 
     // #endregion

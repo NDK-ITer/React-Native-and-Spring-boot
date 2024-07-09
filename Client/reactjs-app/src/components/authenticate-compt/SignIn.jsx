@@ -25,13 +25,14 @@ const SignIn = () => {
                 email: email,
                 password: password,
             })
+            console.log("res: ", res);
             if (res.state == 1) {
                 login(res.data);
             } else if (res.state == 0) {
                 toast.warning(res.mess);
             }
         } catch (error) {
-            toast.error(error);
+            console.log(error);
         }
     }
 

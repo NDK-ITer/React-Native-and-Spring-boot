@@ -5,11 +5,12 @@ import Cookies from 'js-cookie';
 const instance = axios.create({
     baseURL: `http://localhost:7001/`,
     timeout: 15000,
+    headers: { 'Content-Type': 'application/json' },
     withCredentials: true
 });
 
 instance.interceptors.request.use(function (config) {
-    const jwt  = Cookies.get('token');
+    const jwt = Cookies.get('token');
     if (jwt) {
         config.headers[`Authorization`] = `Bearer ${jwt}`
     }

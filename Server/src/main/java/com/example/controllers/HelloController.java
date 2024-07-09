@@ -21,22 +21,10 @@ public class HelloController {
 
     @GetMapping("/hello")
     public Object SayHello(
-    // @RequestAttribute("userIdentify") Claims userIdentify
+    @RequestAttribute("userInformation") Claims userIdentify
     ) {
-        // String userId = userIdentify.get("id", String.class);
-        // String role = userIdentify.get("role", String.class);
-        try {
-            String scheme = ServletUriComponentsBuilder.fromCurrentRequest().build().getScheme();
-            String host = ServletUriComponentsBuilder.fromCurrentRequest().build().getHost();
-            int port = ServletUriComponentsBuilder.fromCurrentRequest().build().getPort();
-            emailService.sendEmail(
-                    "learntoteach2023@gmail.com",
-                    "Verify Email",
-                    String.format("<a href='%s://%s:%d'/>Click here</a>",scheme, host, port)
-            );
-            return "Hello World";
-        } catch (MessagingException e) {
-            return e.getMessage();
-        }
+        String userId = userIdentify.get("tokenAccess", String.class);
+        String role = userIdentify.get("role", String.class);
+        return "Hello World";
     }
 }

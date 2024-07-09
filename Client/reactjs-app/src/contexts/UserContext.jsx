@@ -6,8 +6,9 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(undefined)
     useEffect(() => {
-        const userFromCookie = Cookies.get('user');
+        let userFromCookie = Cookies.get('user');
         if (userFromCookie) {
+            userFromCookie = JSON.parse(userFromCookie);
             setUser(userFromCookie);
         }
     }, []);
@@ -16,7 +17,8 @@ export const UserProvider = ({ children }) => {
         Cookies.set('token', props.token);
         delete props.token;
         Cookies.set('tokenCode', props.tokenCode);
-        Cookies.set('user', props);
+        delete props.tokenCode;
+        Cookies.set('user', JSON.stringify(props));
         setUser(props);
     };
 

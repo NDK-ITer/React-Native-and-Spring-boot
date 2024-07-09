@@ -10,7 +10,73 @@
     }
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+
+body {
+    font-family: 'Dancing Script', cursive;
+}
+
 .body-public-container{
     width: 100%;
     height: 93vh;
+}
+
+.avatar-custom:hover{
+    filter: brightness(0.7);
+}
+
+.overview-user-custom{
+    width: 70%;
+    height: 70%;
+    margin: auto;
+    border-radius: 10px;
+    display: flex;
+    .avatar-information-custom{
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+    .avatar-profile-custom{
+        width: 30%;
+        height: 100%;
+        display: flex;
+    }
+}
+
+.user-information-custom{
+    width: 70%;
+    height: 90%;
+    margin: auto;
+    display: flex;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+
+}
+
+.profile-prop{
+    cursor: pointer;
+}
+
+.profile-prop:hover{
+    filter: brightness(0.7);
+    background: rgb(255, 255, 255);
+    border-radius: 5px;
+}
+
+.email-is-verify{
+    color: green;
+}
+
+.email-is-not-verify{
+    color: rgb(197, 152, 2);
+}
+
+@media (max-width: 768px) {
+    .overview-user-custom {
+        width: 90%;
+    }
+    .user-information-custom {
+        width: 90%;
+        padding: 2%;
+    }
 }

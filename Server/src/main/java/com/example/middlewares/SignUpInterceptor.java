@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.example.business.application.services.UserService;
+import com.example.business.application.services.AuthnService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SignUpInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserService userService;
+    private AuthnService authnService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -32,7 +32,7 @@ public class SignUpInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         if ("POST".equals(method) || "PUT".equals(method)) {
             Map<String, String> requestBody = getRequestBody(request);
-            var checkingResult = userService.IsExistByEmail(requestBody.get("email"));
+            var checkingResult = authnService.IsExistByEmail(requestBody.get("email"));
             if(checkingResult){
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put("mess", "Email already exists");

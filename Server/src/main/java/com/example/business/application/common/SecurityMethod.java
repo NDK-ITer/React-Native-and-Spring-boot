@@ -29,7 +29,7 @@ public class SecurityMethod {
     public static String generateTokenAccess() {
         String uuid = UUID.randomUUID().toString();
         String token = uuid.replaceAll("-", "").toLowerCase();
-        token = token.replaceAll("[^a-zA-Z0-9]", "");
+        // token = token.replaceAll("[^a-zA-Z0-9]", "");
         return token;
     }
 

@@ -21,7 +21,6 @@ const VerifyEmail = () => {
             const res = await verifyEmail({
                 token: token,
             });
-            console.log(res)
             if (res.state == 1) {
                 setVerifyEmailSuccessful(true)
             } else {

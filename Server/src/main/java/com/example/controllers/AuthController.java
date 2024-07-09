@@ -15,7 +15,7 @@ import com.example.business.application.common.SecurityMethod;
 import com.example.business.application.models.userModels.LoginModel;
 import com.example.business.application.models.userModels.RegisterModel;
 import com.example.business.application.services.EmailService;
-import com.example.business.application.services.UserService;
+import com.example.business.application.services.AuthnService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpSession;
 public class AuthController {
     // #region DI
     @Autowired
-    private UserService userService;
+    private AuthnService authnService;
 
     @Autowired
     private EmailService emailService;
@@ -56,14 +56,14 @@ public class AuthController {
                 registerModel.dob = req.get("dob").toString();
                 var rootUrlClient = req.get("clientURL");
                 // checking email is exist
-                var checking = userService.IsExistByEmail(registerModel.email);
+                var checking = authnService.IsExistByEmail(registerModel.email);
                 if (checking) {
                     res.put("mess", "Email already exists");
                     res.put("state", 0);
                     return res;
                 }
                 // add new user
-                var user = userService.Register(registerModel);
+                var user = authnService.Register(registerModel);
                 if (user != null) {
                     // send email
                     var tokenVerifyEmail = user.getTokenVerifyEmail();
@@ -72,7 +72,7 @@ public class AuthController {
                             "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                             "Verify Email",
                             "<a href='" + verifyEmailURL + "'>Click here</a> to verify your email. "
-                                    + "It will be expired in " + userService.expired + " minutes");
+                                    + "It will be expired in " + authnService.expired + " minutes");
                     // prepare data res
                     res.put("state", String.valueOf(1));
                     res.put("mess", "Check Your mail to verify Email!");
@@ -98,13 +98,13 @@ public class AuthController {
             try {
                 var email = req.get("email");
                 var rootUrlClient = req.get("clientURL");
-                var result = userService.GenerateTokenVerifyEmail(email);
+                var result = authnService.GenerateTokenVerifyEmail(email);
                 var verifyEmailURL = String.format("%s%s", rootUrlClient, result);
                 emailService.sendEmail(
                         "learntoteach2023@gmail.com", // change 'toEmail' to email in req
                         "Verify Email",
                         "<a href='" + verifyEmailURL + "'>Click here</a> to verify your email. "
-                                + "It will be expired in " + userService.expired + " minutes");
+                                + "It will be expired in " + authnService.expired + " minutes");
             } catch (Exception e) {
                 res.put("state", String.valueOf(-1));
                 res.put("mess", "Registration failed: " + e.getMessage());
@@ -122,7 +122,7 @@ public class AuthController {
         return CompletableFuture.supplyAsync(() -> {
             var res = new HashMap<String, Object>();
             try {
-                var result = userService.VerifyEmail(tokenVerifyEmail);
+                var result = authnService.VerifyEmail(tokenVerifyEmail);
                 if (result) {
                     // prepare data res
                     res.put("state", String.valueOf(1));
@@ -164,7 +164,7 @@ public class AuthController {
                     res.put("mess", "Must be have 'tokenCode' to get token");
                 }
                 // login
-                var result = userService.Login(loginModel, tokenCode);
+                var result = authnService.Login(loginModel, tokenCode);
                 // checking
                 if (result != null) {
                     if (result.get("token") != null) {
@@ -201,7 +201,7 @@ public class AuthController {
             var res = new HashMap<String, Object>();
             try {
                 var tokenCode = req.get("tokenCode");
-                var result = userService.Logout(tokenCode);
+                var result = authnService.Logout(tokenCode);
                 if (result) {
                     res.put("state", String.valueOf(1));
                     // res.put("mess", "");
@@ -226,7 +226,7 @@ public class AuthController {
             var res = new HashMap<String, Object>();
             try {
                 var email = req.get("email");
-                var checkingResult = userService.IsExistByEmail(email);
+                var checkingResult = authnService.IsExistByEmail(email);
                 if (checkingResult) {
                     // generate OTP
                     String otp = SecurityMethod.generateOTP(10);
@@ -239,7 +239,7 @@ public class AuthController {
                                             "<div style=\"color: red; frontWeight: bolder;\">Don't share it with anyone</div>",
                                     otp));
                     // prepare token to reset password
-                    var user = userService.GetUserByEmail(email);
+                    var user = authnService.GetUserByEmail(email);
                     var tokenResetPassword = SecurityMethod.generateTokenAccess(user.getId(), user.getTokenAccess());
                     // add OTP and tokenResetPassword to session
                     var timeOut = 210;
@@ -319,7 +319,7 @@ public class AuthController {
                 if (dataSession != null) {
                     String tokenAccess = (String) dataSession;
                     // reset password
-                    var result = userService.ResetPassword(tokenAccess, newPassword);
+                    var result = authnService.ResetPassword(tokenAccess, newPassword);
                     // prepare data res
                     if (result) {
                         res.put("state", String.valueOf(1));

@@ -27,9 +27,10 @@ public class JWTClean {
      * 
      * @Scheduled(cron = "0 0 0 * * ?") Chạy vào nửa đêm mỗi ngày
      */
-    @Scheduled(fixedRate = 10000/*10s*/) 
-    public void CleanJWTExpired(){
-        Specification<UserJWT> userJWTSpecification = BaseSpecification.hasPropertyLessThan("expiredDate", LocalDateTime.now());
+    @Scheduled(fixedRate = (86400 * 1000)) /* one day */
+    public void CleanJWTExpired() {
+        Specification<UserJWT> userJWTSpecification = BaseSpecification.hasPropertyLessThan("expiredDate",
+                LocalDateTime.now());
         var userJWTExpired = userJWTRepository.findAll(userJWTSpecification);
         userJWTRepository.deleteAll(userJWTExpired);
     }

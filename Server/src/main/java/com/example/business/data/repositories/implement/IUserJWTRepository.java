@@ -8,4 +8,5 @@ import com.example.business.data.repositories.IBaseRepository;
 @Repository
 public interface IUserJWTRepository extends IBaseRepository<UserJWT, String> {
     UserJWT findByTokenCode(String tokenCode);
+    UserJWT findByToken(String token);
 }

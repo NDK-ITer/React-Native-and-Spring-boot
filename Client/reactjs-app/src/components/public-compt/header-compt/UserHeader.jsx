@@ -40,14 +40,11 @@ const UserHeader = () => {
             <Avatar
                 onClick={handleDropdownToggle}
                 src={user.avatar}
+                className="avatar-custom"
                 style={{
                     width: 45,
                     height: 45,
                     cursor: 'pointer',
-                    '&:hover': {
-                        transform: 'scale(1.1)',
-                        filter: "brightness(0.9)",
-                    }
                 }}
             />
             <Menu
