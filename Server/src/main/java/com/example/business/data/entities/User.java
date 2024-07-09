@@ -42,6 +42,10 @@ public class User {
     private String tokenAccess;
     private String tokenVerifyEmail;
     private String avatar;
+    private String facebook;
+    private String tikTok;
+    private String instagram;
+    private String twitter;
     private boolean isVerified;
     private boolean isLock;
     private LocalDateTime verifiedDate;
@@ -60,6 +64,38 @@ public class User {
     // #endregion
 
     // #region getter setter
+
+    public String getFacebook() {
+        return this.facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getTikTok() {
+        return this.tikTok;
+    }
+
+    public void setTikTok(String tikTok) {
+        this.tikTok = tikTok;
+    }
+
+    public String getInstagram() {
+        return this.instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getTwitter() {
+        return this.twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
 
     public List<UserJWT> getListJWT() {
         return this.listJWT;

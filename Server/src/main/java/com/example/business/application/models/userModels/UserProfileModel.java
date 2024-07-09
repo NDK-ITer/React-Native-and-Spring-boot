@@ -6,5 +6,9 @@ public class UserProfileModel {
     public String email;
     public String phoneNumber;
     public String dateOfBirth;
+    public String facebook;
+    public String tikTok;
+    public String twitter;
+    public String instagram;
     public boolean isVerifyEmail;
 }

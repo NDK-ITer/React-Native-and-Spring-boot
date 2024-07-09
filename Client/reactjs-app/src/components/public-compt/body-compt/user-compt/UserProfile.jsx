@@ -2,36 +2,17 @@ import { Avatar } from "@mui/material";
 import { UserContext } from "../../../../contexts/UserContext"
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabPanel from '@mui/lab/TabPanel';
-import Information from "./user-profile/Information";
-import Product from "./user-profile/Product";
-import FollowRate from "./user-profile/FollowRate";
 
 const UserProfile = () => {
     const { user } = useContext(UserContext)
     const navigate = useNavigate();
-    const [value, setValue] = useState('0');
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const [value, setValue] = useState(1);
 
     //#region Effect
     useEffect(() => {
-        let timeoutId;
-        const checkAndNavigate = () => {
-            if (!user) {
-                navigate('/auth/sign-in');
-            }
-        };
-        timeoutId = setTimeout(checkAndNavigate, 10000);
-        return () => {
-            clearTimeout(timeoutId);
-        };
+        if (!user) {
+            navigate('/auth/sign-in');
+        }
     }, [user, navigate]);
     //#endregion
 
@@ -41,25 +22,47 @@ const UserProfile = () => {
         }}>
             <div style={{
                 width: "100%",
-                height: "30%",
+                height: "100%",
                 display: "flex",
             }}>
-                <div className="overview-user-custom">
-                    <div className="avatar-information-custom">
-                        {user && user.avatar && <Avatar
-                            className="avatar-custom"
-                            src={user.avatar}
-                            style={{
-                                width: 130,
-                                height: 130,
-                                margin: "auto",
-                                cursor: "pointer"
-                            }}
-                        />}
+                <div className="menu-user-custom">
+                    {user && user.avatar && <Avatar
+                        className="avatar-user-custom"
+                        src={user.avatar}
+                    />}
+                    <div className="options-user-custom">
+                        <div
+                            className={value == 1 ? "option-custom option-choose"
+                                : "option-custom"}
+                            onClick={() => setValue(1)}
+                        >Information</div>
+                        <div
+                            className={value == 2 ? "option-custom option-choose"
+                                : "option-custom"}
+                            onClick={() => setValue(2)}
+                        >Contract</div>
+                        <div
+                            className={value == 3 ? "option-custom option-choose"
+                                : "option-custom"}
+                            onClick={() => setValue(3)}
+                        >Communicate</div>
+                        <div
+                            className={value == 4 ? "option-custom option-choose"
+                                : "option-custom"}
+                            onClick={() => setValue(4)}
+                        >Work</div>
+                        <div
+                            className={value == 5 ? "option-custom option-choose"
+                                : "option-custom"}
+                            onClick={() => setValue(5)}
+                        >Follow Rate</div>
                     </div>
                 </div>
+                <div className="component-content">
+                    
+                </div>
             </div>
-            <div style={{
+            {/* <div style={{
                 width: "100%",
                 height: "70%",
                 display: "flex",
@@ -84,7 +87,7 @@ const UserProfile = () => {
                         </TabContext>
                     </Box>
                 </div>
-            </div>
+            </div> */}
         </div>
     </>)
 }

@@ -34,6 +34,10 @@ public class UserService {
         userProfile.phoneNumber = user.getPhoneNumber();
         userProfile.dateOfBirth = String.valueOf(user.getDOB());
         userProfile.isVerifyEmail = user.getIsVerified();
+        userProfile.facebook = user.getFacebook();
+        userProfile.tikTok = user.getTikTok();
+        userProfile.twitter = user.getTwitter();
+        userProfile.instagram = user.getInstagram();
         return userProfile;
     }
 

@@ -58,7 +58,7 @@ const Information = () => {
                         fontWeight: "bolder",
                         textAlign: "center",
                         fontFamily: "Dancing Script",
-                        fontSize: "250%",
+                        fontSize: "200%",
                         color: "blue",
                         borderRadius: "10px",
                     }}

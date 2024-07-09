@@ -12,18 +12,16 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
 
-body {
+/* body {
     font-family: 'Dancing Script', cursive;
-}
+} */
 
 .body-public-container{
     width: 100%;
     height: 93vh;
 }
 
-.avatar-custom:hover{
-    filter: brightness(0.7);
-}
+
 
 .overview-user-custom{
     width: 70%;
@@ -31,6 +29,7 @@ body {
     margin: auto;
     border-radius: 10px;
     display: flex;
+    
     .avatar-information-custom{
         width: 100%;
         height: 100%;
@@ -70,6 +69,72 @@ body {
 .email-is-not-verify{
     color: rgb(197, 152, 2);
 }
+
+.menu-user-custom{
+    background-color: rgba(253, 253, 253, 0.808);
+    width: 20%;
+    height: 100%;
+}
+.component-content{
+    width: 80%;
+    height: 100%;
+}
+
+.avatar-user-custom{
+    width: 130px !important;
+    height: 130px !important;
+    margin: auto;
+    cursor: pointer;
+    margin-top: 10%;
+}
+
+.avatar-user-custom:hover{
+    filter: brightness(0.7);
+}
+
+.avatar-custom:hover{
+    filter: brightness(0.7);
+}
+
+.options-user-custom{
+    width: 100%;
+    height: 76.2%;
+    .option-custom{
+        width: 100%;
+        height: 10%;
+        padding: 3%;
+        padding-left: 10%;
+        font-size: 25px;
+        align-content: center;
+        /* margin-top: 10%; */
+        margin-bottom: 40px;
+        cursor: pointer;
+        /* font-family: 'Dancing Script', cursive; */
+    }
+    .option-custom:hover{
+        background-color: #ffffff;
+    }
+    .option-choose{
+        background: linear-gradient(
+            to right,
+            #0004ff,
+            #0004ff 10%,
+            #ffffff 10%,
+            #ffffff 20%
+        );
+    }
+    /* .option-choose:hover {
+        background-color: #ffffff;
+    }
+
+    .option-choose:active,
+    .option-choose:focus {
+        background-color: #ccc;
+        outline: none;
+    } */
+}
+
+
 
 @media (max-width: 768px) {
     .overview-user-custom {
