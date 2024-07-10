@@ -52,16 +52,6 @@
 
 }
 
-.profile-prop{
-    cursor: pointer;
-}
-
-.profile-prop:hover{
-    filter: brightness(0.7);
-    background: rgb(255, 255, 255);
-    border-radius: 5px;
-}
-
 .email-is-verify{
     color: green;
 }
@@ -106,32 +96,69 @@
         padding-left: 10%;
         font-size: 25px;
         align-content: center;
-        /* margin-top: 10%; */
         margin-bottom: 40px;
         cursor: pointer;
-        /* font-family: 'Dancing Script', cursive; */
+        font-weight: bolder;
+        font-family: 'Dancing Script', cursive;
     }
     .option-custom:hover{
         background-color: #ffffff;
     }
     .option-choose{
         background: linear-gradient(
-            to right,
-            #0004ff,
-            #0004ff 10%,
+            to left,
+            #00aeff ,
+            #ffffff 10%,
             #ffffff 10%,
             #ffffff 20%
         );
     }
-    /* .option-choose:hover {
-        background-color: #ffffff;
+}
+
+.information-areal{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 37vh;
+    margin-top: 3%;
+
+    .custom-page{
+        padding: 20px;
+        width: 70%;
+        min-width: 300px;
+        align-content: center;
+
+        .display-name-custom{
+            font-weight: bolder;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 200%;
+        }
+    
+        .property-custom{
+            font-family: 'Dancing Script', cursive;
+            font-weight: bolder;
+            color: rgb(0, 81, 255);
+            font-size: 150%;
+        }
+        .line-chart-custom{
+            width: 100%;
+            height: 100%;
+        }
+        .edit-btn-custom{
+            margin-left: 95%;
+            cursor: pointer;
+            border-radius: 100%;
+            text-align: center;
+            font-size: 160%;
+        }
+        .edit-btn-custom:hover{
+            filter: brightness(0.7);
+            background-color: rgb(219, 219, 219);
+        }
     }
 
-    .option-choose:active,
-    .option-choose:focus {
-        background-color: #ccc;
-        outline: none;
-    } */
+    
 }
 
 

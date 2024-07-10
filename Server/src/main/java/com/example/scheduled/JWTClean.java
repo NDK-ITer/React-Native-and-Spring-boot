@@ -27,7 +27,7 @@ public class JWTClean {
      * 
      * @Scheduled(cron = "0 0 0 * * ?") Chạy vào nửa đêm mỗi ngày
      */
-    @Scheduled(fixedRate = (86400 * 1000)) /* one day */
+    @Scheduled(fixedRate = (10 * 1000)) /* one day */
     public void CleanJWTExpired() {
         Specification<UserJWT> userJWTSpecification = BaseSpecification.hasPropertyLessThan("expiredDate",
                 LocalDateTime.now());

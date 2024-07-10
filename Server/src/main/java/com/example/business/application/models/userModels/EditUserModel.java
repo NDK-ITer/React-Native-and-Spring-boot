@@ -5,4 +5,5 @@ public class EditUserModel {
     public String newDisplayName;
     public String newFirstName;
     public String newLastName;
+    public String newDateOfBirth;
 }

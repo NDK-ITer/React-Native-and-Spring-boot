@@ -83,7 +83,7 @@ public class AuthnService {
         // get role with default id USER
         var role = roleRepository.findByNormalizeName("USER");
         // avatar default
-        var avatar = FileMethod.copyAndRenameImage(
+        var avatar = FileMethod.setDefaultImage(
                 String.format("Avatar-%s.png", Base64.getEncoder().encodeToString(registerModel.email.getBytes())),
                 "default-avatar.png");
         // create new user
