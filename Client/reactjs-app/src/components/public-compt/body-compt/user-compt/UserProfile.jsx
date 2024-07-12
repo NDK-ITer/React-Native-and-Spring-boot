@@ -24,6 +24,7 @@ const UserProfile = () => {
 
     const uploadAvatar = async (croppedImage) => {
         setLoading(true);
+        setIsActive(true);
         try {
             const res = await UploadAvatar({
                 avatar: croppedImage,

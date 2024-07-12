@@ -5,7 +5,7 @@ import ImageCropper from './ImageCropper';
 
 const AvatarPicker = ({ uploadAvatar, active }) => {
     const [selectedImage, setSelectedImage] = useState(null);
-    const [croppedImage, setCroppedImage] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(selectedImage);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -23,8 +23,10 @@ const AvatarPicker = ({ uploadAvatar, active }) => {
     };
 
     useEffect(() => {
-        uploadAvatar(croppedImage)
-    },[active])
+        if (active && croppedImage != null) {
+            uploadAvatar(croppedImage)
+        }
+    }, [active])
 
     return (<>
         <Box p={2}>
